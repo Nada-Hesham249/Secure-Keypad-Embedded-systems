@@ -12,6 +12,10 @@
 #define SUCCESS_LED    GPIO_B, 4
 #define Alarm_LED    GPIO_B, 5
 
+// Lock button (active-low with pull-up)
+#define LOCK_BUTTON_PORT GPIO_C
+#define LOCK_BUTTON_PIN  13
+
 // Correct password
 #define CORRECT_PASSWORD "1234"
 #define PASSWORD_LENGTH 4
@@ -19,5 +23,15 @@
 // Function prototypes
 void App_Init(void);
 void App_Run(void);
+
+// State-machine integration API (implemented in app.c)
+uint8 App_ProcessKeypadInputStep(void);
+uint8 App_IsPasswordComplete(void);
+uint8 App_IsPasswordCorrect(void);
+void App_TransitionToUnlockedOutput(void);
+uint8 App_HandleInvalidSequenceOutput(void);
+void App_HandleLockCommandOutput(void);
+void App_HandleEmergencyResetOutput(void);
+uint8 App_IsLockButtonPressed(void);
 
 #endif // APP_H

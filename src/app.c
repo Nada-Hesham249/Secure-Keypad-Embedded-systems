@@ -7,7 +7,9 @@
 
 #define NO_KEY_PRESSED 0xFF
 #define FAILURE_LIMIT 3
-#define FAILURE_LED_ON_TIME_MS 2000
+
+void SM_Init(void);
+void SM_Update(void);
 
 // Static variables
 static uint8 input_buffer[PASSWORD_LENGTH];
@@ -28,6 +30,10 @@ static void InitLeds(void) {
     Gpio_Init(PROGRESS_LED3, GPIO_OUTPUT, GPIO_PUSH_PULL);
     Gpio_Init(SUCCESS_LED, GPIO_OUTPUT, GPIO_PUSH_PULL);
     Gpio_Init(Alarm_LED, GPIO_OUTPUT, GPIO_PUSH_PULL);
+}
+
+static void InitLockButton(void) {
+    Gpio_Init(LOCK_BUTTON_PORT, LOCK_BUTTON_PIN, GPIO_INPUT, GPIO_PULL_UP);
 }
 
 static void TurnOffAllLeds(void) {
@@ -78,19 +84,6 @@ static void ResetForNewAttempt(void) {
     ResetInputState();
 }
 
-static void HandleFailureLimitReached(void) {
-    SevenSeg_Display(FAILURE_LIMIT);
-    Gpio_WritePin(Alarm_LED, HIGH);
-    delay_ms(FAILURE_LED_ON_TIME_MS);
-
-    Gpio_WritePin(Alarm_LED, LOW);
-    failure_count = 0;
-    SevenSeg_Display(failure_count);
-    ClearInputBuffer();
-    ResetInputState();
-    TurnOffAllLeds();
-}
-
 static void WaitForKeyRelease(void) {
     while (Keypad_Scan() != NO_KEY_PRESSED) {
         delay_ms(10);
@@ -109,26 +102,6 @@ static uint8 IsPasswordCorrect(void) {
     }
 
     return 1;
-}
-
-static void HandleCorrectPassword(void) {
-    Gpio_WritePin(SUCCESS_LED, HIGH);
-
-    while (1) {
-        // Keep system in success state.
-    }
-}
-
-static void HandleWrongPassword(void) {
-    failure_count++;
-    SevenSeg_Display(failure_count);
-
-    if (failure_count >= FAILURE_LIMIT) {
-        HandleFailureLimitReached();
-        return;
-    }
-
-    ResetForNewAttempt();
 }
 
 static uint8 IsValidKeyInput(uint8 key) {
@@ -152,21 +125,10 @@ static void ProcessKeypadInput(void) {
     WaitForKeyRelease();
 }
 
-static void ProcessPasswordCheck(void) {
-    if (!IsPasswordComplete()) {
-        return;
-    }
-
-    if (IsPasswordCorrect()) {
-        HandleCorrectPassword();
-    } else {
-        HandleWrongPassword();
-    }
-}
-
 void App_Init(void) {
     InitClocks();
     InitLeds();
+    InitLockButton();
     TurnOffAllLeds();
 
     Keypad_Init();
@@ -175,12 +137,72 @@ void App_Init(void) {
 
     ClearInputBuffer();
     ResetInputState();
+
+    SM_Init();
 }
 
 void App_Run(void) {
     while (1) {
-        ProcessKeypadInput();
-        ProcessPasswordCheck();
+        SM_Update();
         delay_ms(100);
     }
+}
+
+uint8 App_ProcessKeypadInputStep(void) {
+    uint8 previous_index = input_index;
+    ProcessKeypadInput();
+    return (input_index != previous_index);
+}
+
+uint8 App_IsPasswordComplete(void) {
+    return IsPasswordComplete();
+}
+
+uint8 App_IsPasswordCorrect(void) {
+    return IsPasswordCorrect();
+}
+
+void App_TransitionToUnlockedOutput(void) {
+    ResetForNewAttempt();
+    ClearInputBuffer();
+    Gpio_WritePin(SUCCESS_LED, HIGH);
+}
+
+uint8 App_HandleInvalidSequenceOutput(void) {
+    failure_count++;
+    SevenSeg_Display(failure_count);
+    ResetForNewAttempt();
+    ClearInputBuffer();
+
+    if (failure_count >= FAILURE_LIMIT) {
+        Gpio_WritePin(Alarm_LED, HIGH);
+        return 1;
+    }
+
+    return 0;
+}
+
+void App_HandleLockCommandOutput(void) {
+    ResetForNewAttempt();
+    ClearInputBuffer();
+    failure_count = 0;
+    SevenSeg_Display(failure_count);
+}
+
+void App_HandleEmergencyResetOutput(void) {
+    Gpio_WritePin(Alarm_LED, LOW);
+    failure_count = 0;
+    SevenSeg_Display(failure_count);
+    ClearInputBuffer();
+    ResetInputState();
+    TurnOffAllLeds();
+}
+
+uint8 App_IsLockButtonPressed(void) {
+    static uint8 previous_state = HIGH;
+    uint8 current_state = Gpio_ReadPin(LOCK_BUTTON_PORT, LOCK_BUTTON_PIN);
+    uint8 is_pressed_edge = (previous_state == HIGH) && (current_state == LOW);
+
+    previous_state = current_state;
+    return is_pressed_edge;
 }
