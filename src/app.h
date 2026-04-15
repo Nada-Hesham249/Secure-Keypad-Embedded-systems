@@ -2,6 +2,7 @@
 #define APP_H
 
 #include "Std_Types.h"
+#include "Gpio.h"
 
 // LED definitions
 #define PROGRESS_LED0  GPIO_B, 0
@@ -9,6 +10,7 @@
 #define PROGRESS_LED2  GPIO_B, 2
 #define PROGRESS_LED3  GPIO_B, 3
 #define SUCCESS_LED    GPIO_B, 4
+#define Alarm_LED    GPIO_B, 5
 
 // Correct password
 #define CORRECT_PASSWORD "1234"
