@@ -11,9 +11,22 @@ typedef struct {
 } ExtiType;
 
 typedef struct {
-    volatile uint32 NVIC_ISER[8];
-    uint32 _r[24];
-    volatile uint32 NVIC_ICER[8];
+    volatile uint32 NVIC_ISER[8];   // 0x000
+    uint32 RESERVED0[24];
+
+    volatile uint32 NVIC_ICER[8];   // 0x080
+    uint32 RESERVED1[24];
+
+    volatile uint32 NVIC_ISPR[8];   // 0x100
+    uint32 RESERVED2[24];
+
+    volatile uint32 NVIC_ICPR[8];   // 0x180
+    uint32 RESERVED3[24];
+
+    volatile uint32 NVIC_IABR[8];   // 0x200
+    uint32 RESERVED4[56];
+
+    volatile uint8 NVIC_IPR[240];   // 0x300
 } NvicType;
 
 typedef struct {
@@ -71,6 +84,11 @@ void Exti_Disable(uint8 LineNumber) {
     EXTI->IMR &= ~(0x01 << LineNumber);
     uint8 irqNumber = ExtiLineNumberNvicMap[LineNumber];
     NVIC->NVIC_ICER[irqNumber / 32] |= (0x01 << (irqNumber % 32));
+}
+
+void Exti_SetNvicPriority(uint8 LineNumber, uint8 Priority) {
+    uint8 irqNumber = ExtiLineNumberNvicMap[LineNumber];
+    NVIC->NVIC_IPR[irqNumber] = (Priority << 4);
 }
 
 

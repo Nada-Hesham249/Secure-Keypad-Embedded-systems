@@ -36,6 +36,7 @@
 typedef void (*ExtiCallback)(void);
 
 void Exti_Init(uint8 LineNumber, uint8 PortName, uint8 EdgeType, ExtiCallback Callback);
+void Exti_SetNvicPriority(uint8 LineNumber, uint8 Priority);
 
 void Exti_Enable(uint8 LineNumber);
 
