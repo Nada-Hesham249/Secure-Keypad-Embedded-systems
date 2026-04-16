@@ -229,13 +229,20 @@ if (SM_GetState()==STATE_ALARM) {
     SM_SetResetFlagFromISR();
 }
 }
-
-uint8 App_IsLockButtonPressed(void) {
-    static uint8 previous_state = HIGH;
-    uint8 current_state = Gpio_ReadPin(LOCK_BUTTON_PORT, LOCK_BUTTON_PIN);
-    uint8 is_pressed_edge = (previous_state == HIGH) && (current_state == LOW);
-
-    previous_state = current_state;
-    return is_pressed_edge;
+uint8 App_IsLockButtonPressed(void)
+{
+    static uint8 lastButtonState = HIGH;
+    uint8 currentState1 = Gpio_ReadPin(LOCK_BUTTON_PORT, LOCK_BUTTON_PIN);
+    delay_ms(30);  // debounce delay
+    uint8 currentState2 = Gpio_ReadPin(LOCK_BUTTON_PORT, LOCK_BUTTON_PIN);
+    if (currentState1 == currentState2)
+    {// Edge detection (HIGH → LOW)
+        if ((lastButtonState == HIGH) && (currentState1 == LOW))
+        {lastButtonState = currentState1;
+            return 1;
+        }
+        lastButtonState = currentState1;
+    }
+    return 0;
 }
 
