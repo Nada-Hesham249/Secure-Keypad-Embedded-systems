@@ -10,12 +10,6 @@
 #define NO_KEY_PRESSED 0xFF
 #define FAILURE_LIMIT 3
 
-// void SM_Init(void);
-// void SM_Update(void);
-// void SM_SetResetFlagFromISR(void);
-// void SM_SetDoorBellFlagFromISR(void);
-// void App_EmergencyResetCallback(void);
-// void App_DoorBellCallback(void);
 
 // Static variables
 static uint8 input_buffer[PASSWORD_LENGTH];
@@ -109,7 +103,7 @@ static void ResetForNewAttempt(void) {
 
 static void WaitForKeyRelease(void) {
     while (Keypad_Scan() != NO_KEY_PRESSED) {
-        delay_ms(10);
+        delay_ms(20);
     }
 }
 
@@ -165,12 +159,6 @@ void App_Init(void) {
     SM_Init();
 }
 
-// void App_Run(void) {
-//     while (1) {
-//         SM_Update();
-//         delay_ms(100);
-//     }
-// }
 
 uint8 App_ProcessKeypadInputStep(void) {
     uint8 previous_index = input_index;
@@ -215,7 +203,7 @@ void App_HandleLockCommandOutput(void) {
 
 void App_HandleDoorBellOutput(void) {
     Gpio_WritePin(DOORBELL_LED, HIGH);
-    delay_ms(2000);
+    delay_ms(1000);
     Gpio_WritePin(DOORBELL_LED, LOW);
 }
 
