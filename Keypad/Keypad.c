@@ -3,13 +3,13 @@
 #include "Gpio.h"
 #include "Utils.h"
 
-uint8 KeypadDataMap[KEYPAD_NUM_ROWS][KEYPAD_NUM_COLS] = {
-    {'1', '2', '3'},
-    {'4', '5', '6'},
-    {'7', '8', '9'},
-    {'0', '0', '0'}
-};
 
+uint8 KeypadDataMap[KEYPAD_NUM_ROWS][KEYPAD_NUM_COLS] = {
+    {'7', '8', '9', '/'},
+    {'4', '5', '6', '*'},
+    {'1', '2', '3', '-'},
+    {'C', '0', '=', '+'}
+};
 uint8 KeypadRowsPins[KEYPAD_NUM_ROWS][2] = {
     {Keypad_R0},
     {Keypad_R1},
@@ -21,6 +21,7 @@ uint8 KeypadColsPins[KEYPAD_NUM_COLS][2] = {
     {Keypad_C0},
     {Keypad_C1},
     {Keypad_C2},
+    {Keypad_C3}
 
 };
 

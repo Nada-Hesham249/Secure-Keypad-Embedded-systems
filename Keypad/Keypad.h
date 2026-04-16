@@ -14,10 +14,12 @@
 #define Keypad_C0 GPIO_D, 0
 #define Keypad_C1 GPIO_D, 1
 #define Keypad_C2 GPIO_D, 2
+#define Keypad_C3 GPIO_D, 3
+
 
 
 #define KEYPAD_NUM_ROWS 4
-#define KEYPAD_NUM_COLS 3
+#define KEYPAD_NUM_COLS 4
 
 void Keypad_Init(void);
 
