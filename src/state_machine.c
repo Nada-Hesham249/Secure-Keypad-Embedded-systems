@@ -68,10 +68,9 @@ void SM_Update(void) {
                     }
                     break;
 
-                // case EVENT_EMERGENCY_RESET_TRIGGERED:
-               // // App_HandleEmergencyResetOutput();
-                //     current_state = STATE_LOCKED;
-                //     break;
+                case EVENT_EMERGENCY_RESET_TRIGGERED:
+                    current_state = STATE_LOCKED;
+                    break;
 
                 case EVENT_LOCK_COMMAND_TRIGGERED:
                 case EVENT_NONE:
@@ -85,12 +84,11 @@ void SM_Update(void) {
                 App_HandleLockCommandOutput();
                 current_state = STATE_LOCKED;
             }
-            break;
-            // case EVENT_EMERGENCY_RESET_TRIGGERED:
-            // // App_HandleEmergencyResetOutput();
-            //     current_state = STATE_LOCKED;
-            //     break;
 
+            if (event==EVENT_EMERGENCY_RESET_TRIGGERED) {
+            current_state = STATE_LOCKED;
+            }
+            break;
 
         case STATE_ALARM:
 

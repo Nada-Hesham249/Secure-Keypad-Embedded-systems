@@ -220,14 +220,14 @@ void App_HandleDoorBellOutput(void) {
 }
 
 void App_HandleEmergencyResetOutput(void) {
-if (SM_GetState()==STATE_ALARM) {
+
     failure_count = 0;
     SevenSeg_Display(failure_count);
     ClearInputBuffer();
     ResetInputState();
     TurnOffAllLeds();
     SM_SetResetFlagFromISR();
-}
+
 }
 uint8 App_IsLockButtonPressed(void)
 {
