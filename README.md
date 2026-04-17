@@ -10,6 +10,8 @@ The system is designed using a **Mealy State Machine** and integrates **hardware
 
 The system is fully **simulated using Proteus** to validate both hardware behavior and system logic.
 
+![System Design](media/image.png)
+
 ---
 
 ## 🧠 System Features
