@@ -33,18 +33,6 @@ The system is fully **simulated using Proteus** to validate both hardware behavi
 
 ---
 
-## 🧩 System Architecture
-
-```text
-Drivers Layer (GPIO, RCC, Keypad, SevenSeg, EXTI)
-        ↓
-Application Layer (app.c)
-        ↓
-State Machine (state_machine.c)
-```
-
----
-
 ## 🧪 Simulation (Proteus)
 
 The system is implemented and tested using **Proteus simulation environment**.
@@ -284,27 +272,6 @@ Behavior:
 
 
  ![Simulation Demo](media/proteus.gif)
-
----
-
-## 📁 Project Structure
-
-```text
-/drivers
-    gpio.c / gpio.h
-    rcc.c / rcc.h
-    keypad.c / keypad.h
-    sevenseg.c / sevenseg.h
-    exti.c / exti.h
-
-/app
-    app.c / app.h
-
-/state_machine
-    state_machine.c / state_machine.h
-
-main.c
-```
 
 ---
 
