@@ -117,7 +117,7 @@ doorbell_flag = 1;
 
 * State machine:
 
-  * Generates pulse (LED / buzzer)
+  * Generates pulse (LED)
 
 IMPORTANT:
 
