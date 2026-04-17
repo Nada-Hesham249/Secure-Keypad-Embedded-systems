@@ -283,7 +283,7 @@ Behavior:
 
 
 
-  ![System Design](images/system.png)
+ ![Simulation Demo](media/proteus.gif)
 
 ---
 
