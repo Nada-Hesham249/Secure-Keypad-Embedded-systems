@@ -281,6 +281,10 @@ Behavior:
 * Next State:
   → Remain in STATE_ALARM
 
+
+
+  ![System Design](images/system.png)
+
 ---
 
 ## 📁 Project Structure
